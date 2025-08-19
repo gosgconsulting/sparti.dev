@@ -21,7 +21,6 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
     const endpoints = [
       '/api/health',
       '/', // Fallback to root route
-      '/favicon.ico', // Another common fallback
     ];
 
     let latency = 0;
@@ -29,12 +28,22 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
 
     for (const endpoint of endpoints) {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
         const start = performance.now();
         const response = await fetch(endpoint, {
           method: 'HEAD',
           cache: 'no-cache',
+          signal: controller.signal,
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            Pragma: 'no-cache',
+          },
         });
         const end = performance.now();
+
+        clearTimeout(timeoutId);
 
         if (response.ok) {
           latency = Math.round(end - start);
@@ -42,7 +51,12 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
           break;
         }
       } catch (endpointError) {
-        console.debug(`Failed to connect to ${endpoint}:`, endpointError);
+        // Silently handle fetch errors - they're expected when offline
+        if (endpointError instanceof Error && endpointError.name === 'AbortError') {
+          // Request was aborted due to timeout
+          continue;
+        }
+        // Other fetch errors (network issues, CORS, etc.) - continue silently
         continue;
       }
     }
@@ -53,7 +67,10 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
       lastChecked: new Date().toISOString(),
     };
   } catch (error) {
-    console.error('Connection check failed:', error);
+    // Only log unexpected errors, not network-related ones
+    if (!(error instanceof TypeError && error.message.includes('fetch'))) {
+      console.warn('Connection check encountered an unexpected error:', error);
+    }
     return {
       connected: false,
       latency: 0,
