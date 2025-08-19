@@ -38,7 +38,7 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
           signal: controller.signal,
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
+            Pragma: 'no-cache',
           },
         });
         const end = performance.now();
