@@ -1,0 +1,18 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+numReplicas = 1
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[env]
+NODE_ENV = "production"
+RUNNING_IN_DOCKER = "true"
+VITE_HMR_HOST = "0.0.0.0"
+VITE_LOG_LEVEL = "info"
+CHOKIDAR_USEPOLLING = "true"
+WATCHPACK_POLLING = "true"
+FORCE_COLOR = "0"
+CI = "true"

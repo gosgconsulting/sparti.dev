@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  bolt-diy:
+    image: ghcr.io/stackblitz-labs/bolt.diy:sha-bab9a64@sha256:17f2106b8dd6d9293d75492fbc01aea67b9c6b7e14c25717f6a05258e311bea7
+    container_name: bolt-diy-production
+    ports:
+      - "80:5173"
+      - "5173:5173"
+    env_file:
+      - production.env
+    environment:
+      - NODE_ENV=production
+      - RUNNING_IN_DOCKER=true
+      - VITE_HMR_HOST=0.0.0.0
+    volumes:
+      # Optional: Mount a volume for persistent data if needed
+      - bolt_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5173/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - bolt_network
+
+volumes:
+  bolt_data:
+    driver: local
+
+networks:
+  bolt_network:
+    driver: bridge
