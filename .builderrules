@@ -1,0 +1,33 @@
+Please follow these strict practices when pushing changes via Builder.io to this repo.
+
+Scope of changes
+Allowed: app/components/**, app/styles/**, app/routes/**.tsx (UI-only routes/components).
+Forbidden: app/lib/**, app/lib/api/**, app/routes/api.*, electron/**, functions/**, scripts/**, types/**.
+No changes to TypeScript types, server code, build config, or dependencies.
+Formatting & line endings
+Use LF line endings only (no CRLF). Respect .editorconfig and .prettierrc.
+Run Prettier and ESLint autofix before committing:
+pnpm format
+pnpm lint --fix
+No whitespace-only or import-order churn.
+React/Remix constraints
+UI edits must remain client-safe. Do not import Node-only modules into client components.
+No side effects at module scope. Do not move data fetching to top-level; use Remix loaders/actions only where they already exist.
+Keep component names/exports stable; do not rename public props without approval.
+Assets
+Place new images/icons in public/ (or public/icons/). Optimize SVGs and images.
+Branches & PRs
+Create feature branches: feat/builder/<ticket-or-page>.
+One PR per page/section. Keep diffs minimal and isolated to UI.
+PR must pass CI and linting. No unrelated cleanup.
+Performance & accessibility
+Reuse existing components and tokens. Avoid adding heavy libraries.
+Maintain semantic HTML, alt text, aria labels, and color contrast.
+Environment & secrets
+Never commit .env* or production keys. Do not alter deployment files.
+Verification
+Build locally before PR: pnpm build.
+Smoke test in dev: pnpm dev and verify the edited pages.
+Escalation
+If a required change touches forbidden areas, open a draft PR and tag maintainers for guidance.
+Tip: The repository enforces LF and lint rules. Recent failures were caused by CRLF in app/lib/api/connection.ts. Ensure your editor/CI preserves LF across all edits.
