@@ -1,5 +1,5 @@
 # Use the official bolt.diy image as base
-FROM ghcr.io/stackblitz-labs/bolt.diy:sha-bab9a64
+FROM ghcr.io/stackblitz-labs/bolt.diy:sha-bab9a64 AS base
 
 # Set working directory
 WORKDIR /app
@@ -7,7 +7,6 @@ WORKDIR /app
 # Railway requires the app to bind to 0.0.0.0 and use the PORT environment variable
 ENV HOST=0.0.0.0
 ENV PORT=${PORT:-5173}
-ENV NODE_ENV=production
 ENV RUNNING_IN_DOCKER=true
 
 # Railway environment configuration
@@ -29,3 +28,11 @@ EXPOSE ${PORT:-5173}
 
 # Railway uses a different startup command, so we'll use the default from the base image
 # The base image should already have the proper CMD/ENTRYPOINT
+
+# Development stage target
+FROM base AS bolt-ai-development
+ENV NODE_ENV=development
+
+# Production stage target
+FROM base AS bolt-ai-production
+ENV NODE_ENV=production
