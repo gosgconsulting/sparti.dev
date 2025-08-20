@@ -29,3 +29,6 @@ EXPOSE ${PORT:-5173}
 
 # Railway uses a different startup command, so we'll use the default from the base image
 # The base image should already have the proper CMD/ENTRYPOINT
+
+# Development target that reuses the production stage, ensuring docker build works
+FROM bolt-ai-production AS bolt-ai-development
