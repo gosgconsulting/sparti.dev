@@ -25,6 +25,7 @@ export const useConnectionStatus = () => {
       if (!isOnline) {
         setCurrentIssue('disconnected');
         setHasConnectionIssues('disconnected' !== acknowledgedIssue);
+
         return;
       }
 
@@ -35,14 +36,16 @@ export const useConnectionStatus = () => {
 
       // Only show issues if they're new or different from the acknowledged one
       setHasConnectionIssues(issue !== null && issue !== acknowledgedIssue);
-    } catch (error) {
+    } catch {
       // Handle errors more gracefully - don't automatically assume disconnected
       const wasConnected = currentIssue === null;
+
       if (wasConnected) {
         // Only set as disconnected if we were previously connected
         setCurrentIssue('disconnected');
         setHasConnectionIssues('disconnected' !== acknowledgedIssue);
       }
+
       // Otherwise keep the current state
     }
   };
@@ -51,6 +54,7 @@ export const useConnectionStatus = () => {
     // Listen to online/offline events
     const handleOnline = () => {
       setIsOnline(true);
+
       // Check connection when coming back online
       setTimeout(checkStatus, 1000);
     };

@@ -56,6 +56,7 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
           // Request was aborted due to timeout
           continue;
         }
+
         // Other fetch errors (network issues, CORS, etc.) - continue silently
         continue;
       }
@@ -71,6 +72,7 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
     if (!(error instanceof TypeError && error.message.includes('fetch'))) {
       console.warn('Connection check encountered an unexpected error:', error);
     }
+
     return {
       connected: false,
       latency: 0,
