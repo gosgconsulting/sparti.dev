@@ -1,5 +1,5 @@
 # Use the official bolt.diy image as base
-FROM ghcr.io/stackblitz-labs/bolt.diy:sha-bab9a64
+FROM ghcr.io/stackblitz-labs/bolt.diy:sha-bab9a64 AS bolt-ai-production
 
 # Set working directory
 WORKDIR /app
