@@ -4,6 +4,14 @@ FROM ghcr.io/stackblitz-labs/bolt.diy:sha-bab9a64
 # Set working directory
 WORKDIR /app
 
+# Copy custom logo files to public directory
+COPY public/logo-light-styled.png /app/build/client/logo-light-styled.png
+COPY public/logo-dark-styled.png /app/build/client/logo-dark-styled.png
+
+# Also copy to the public directory structure that might be used in dev
+COPY public/logo-light-styled.png /app/public/logo-light-styled.png
+COPY public/logo-dark-styled.png /app/public/logo-dark-styled.png
+
 # Railway requires the app to bind to 0.0.0.0 and use the PORT environment variable
 ENV HOST=0.0.0.0
 ENV PORT=${PORT:-5173}
